@@ -106,19 +106,22 @@ module davel_cube_bevel(size, r, center=false, front=true, back=true, top=true, 
 			
 			if (round_vert)
 			{
-				for (vx=[0,1], vy=[0,1], vz=[0,1])
-				{
-					vertex = [vx, vy, vz];
-					symmvertex = vertex * 2 - [1, 1, 1];
-					translate([size[0]*vx, size[1]*vy, size[2]*vz] - symmvertex * (r))
-					{
-						difference()
-						{
-							translate(symmvertex * r / 2) cube(r, center=true);
-							sphere(r=r);
-						}
-					}
-				}
+				if (bottom && front && left)
+					davel_round_vertex([0,0,0], [-1,-1,-1], r);
+				if (bottom && front && right)
+					davel_round_vertex([size[0],0,0], [1,-1,-1], r);
+				if (top && front && left)
+					davel_round_vertex([0,0,size[2]], [-1,-1,1], r);
+				if (top && front && right)
+					davel_round_vertex([size[0],0,size[2]], [1,-1,1], r);
+				if (bottom && back && left)
+					davel_round_vertex([0,size[1],0], [-1,1,-1], r);
+				if (bottom && back && right)
+					davel_round_vertex([size[0],size[1],0], [1,1,-1], r);
+				if (top && back && left)
+					davel_round_vertex([0,size[1],size[2]], [-1,1,1], r);
+				if (top && back && right)
+					davel_round_vertex([size[0],size[1],size[2]], [1,1,1], r);
 			}
 		}
 	}
@@ -126,6 +129,17 @@ module davel_cube_bevel(size, r, center=false, front=true, back=true, top=true, 
 
 // ===================== functions and "private" modules =====================
 
+module davel_round_vertex(pos, dir, r)
+{
+	translate(pos - dir * r)
+	{
+		difference()
+		{
+			translate(dir * r / 2) cube(r, center=true);
+			sphere(r=r);
+		}
+	}
+}
 
 function davel_transpose4(m) = [
 	[m[0][0],m[1][0],m[2][0],m[3][0]],
