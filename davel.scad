@@ -71,35 +71,60 @@ module davel_bevel_pos(pos, length, n1, n2, r, offset=0.1)
 }
 
 
-module davel_cube_bevel(size, r, front=true, back=true, top=true, bottom=true, left=true, right=true, offset=0.1)
-{
-	if (top && left)
-		davel_bevel_pos([0, size[1]/2, size[2]], size[1], [-1,0,0], [0,0,1], r, offset);
-	if (top && right)
-		davel_bevel_pos([size[0], size[1]/2, size[2]], size[1], [1,0,0], [0,0,1], r, offset);
-	if (bottom && left)
-		davel_bevel_pos([0, size[1]/2, 0], size[1], [-1,0,0], [0,0,-1], r, offset);
-	if (bottom && right)
-		davel_bevel_pos([size[0], size[1]/2, 0], size[1], [1,0,0], [0,0,-1], r, offset);
-	
-	if (front && top)
-		davel_bevel_pos([size[0]/2, 0, size[2]], size[0], [0,-1,0], [0,0,1], r, offset);
-	if (front && bottom)
-		davel_bevel_pos([size[0]/2, 0, 0], size[0], [0,-1,0], [0,0,-1], r, offset);
-	if (back && top)
-		davel_bevel_pos([size[0]/2, size[1], size[2]], size[0], [0,1,0], [0,0,1], r, offset);
-	if (back && bottom)
-		davel_bevel_pos([size[0]/2, size[1], 0], size[0], [0,1,0], [0,0,-1], r, offset);
-	
-	if (front && left)
-		davel_bevel_pos([0, 0, size[2]/2], size[2], [0,-1,0], [-1,0,0], r, offset);
-	if (front && right)
-		davel_bevel_pos([size[0], 0, size[2]/2], size[2], [0,-1,0], [1,0,0], r, offset);
-	if (back && left)
-		davel_bevel_pos([0, size[1], size[2]/2], size[2], [0,1,0], [-1,0,0], r, offset);
-	if (back && right)
-		davel_bevel_pos([size[0], size[1], size[2]/2], size[2], [0,1,0], [1,0,0], r, offset);
+module davel_cube_bevel(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, offset=0.1)
+{	
+	translate(center ? -size/2 : [0,0,0])
+	{
+		union()
+		{
+			if (top && left)
+				davel_bevel_pos([0, size[1]/2, size[2]], size[1], [-1,0,0], [0,0,1], r, offset);
+			if (top && right)
+				davel_bevel_pos([size[0], size[1]/2, size[2]], size[1], [1,0,0], [0,0,1], r, offset);
+			if (bottom && left)
+				davel_bevel_pos([0, size[1]/2, 0], size[1], [-1,0,0], [0,0,-1], r, offset);
+			if (bottom && right)
+				davel_bevel_pos([size[0], size[1]/2, 0], size[1], [1,0,0], [0,0,-1], r, offset);
+			
+			if (front && top)
+				davel_bevel_pos([size[0]/2, 0, size[2]], size[0], [0,-1,0], [0,0,1], r, offset);
+			if (front && bottom)
+				davel_bevel_pos([size[0]/2, 0, 0], size[0], [0,-1,0], [0,0,-1], r, offset);
+			if (back && top)
+				davel_bevel_pos([size[0]/2, size[1], size[2]], size[0], [0,1,0], [0,0,1], r, offset);
+			if (back && bottom)
+				davel_bevel_pos([size[0]/2, size[1], 0], size[0], [0,1,0], [0,0,-1], r, offset);
+			
+			if (front && left)
+				davel_bevel_pos([0, 0, size[2]/2], size[2], [0,-1,0], [-1,0,0], r, offset);
+			if (front && right)
+				davel_bevel_pos([size[0], 0, size[2]/2], size[2], [0,-1,0], [1,0,0], r, offset);
+			if (back && left)
+				davel_bevel_pos([0, size[1], size[2]/2], size[2], [0,1,0], [-1,0,0], r, offset);
+			if (back && right)
+				davel_bevel_pos([size[0], size[1], size[2]/2], size[2], [0,1,0], [1,0,0], r, offset);
+			
+			if (round_vert)
+			{
+				for (vx=[0,1], vy=[0,1], vz=[0,1])
+				{
+					vertex = [vx, vy, vz];
+					symmvertex = vertex * 2 - [1, 1, 1];
+					translate([size[0]*vx, size[1]*vy, size[2]*vz] - symmvertex * (r))
+					{
+						difference()
+						{
+							translate(symmvertex * r / 2) cube(r, center=true);
+							sphere(r=r);
+						}
+					}
+				}
+			}
+		}
+	}
 }
+
+// ===================== functions and "private" modules =====================
 
 
 function davel_transpose4(m) = [
