@@ -3,7 +3,7 @@ Library to draw (or, better, substract) simple bevel borders.
 */
 
 
-module davel_bevel(length, n1, n2, r=2, offset=0.01, $fa=$fa, $fn=$fn, $fs=$fs)
+module davel_bevel(length, n1, n2, r=2, offset=0.01)
 {
 	assert(is_list(n1));
 	assert(is_list(n2));
@@ -62,7 +62,7 @@ module davel_bevel(length, n1, n2, r=2, offset=0.01, $fa=$fa, $fn=$fn, $fs=$fs)
 }
 
 
-module davel_bevel_pos(pos, length, n1, n2, r, $fa=$fa, $fn=$fn, $fs=$fs)
+module davel_bevel_pos(pos, length, n1, n2, r)
 {
 	translate(pos) davel_bevel(length, n1, n2, r);
 }
