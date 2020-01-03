@@ -36,9 +36,16 @@ module davel_bevel(length, n1, n2, r=2, offset=0.01)
 	m = davel_matrix_from_columns4([newx, newy, newz]);
 	m_inv = davel_transpose3(davel_matrix4_to_3(m));
 	
-	c_flat = davel_matrix_product_vector3(m_inv, c);
-	ptang1_flat = davel_matrix_product_vector3(m_inv, ptang1);
-	ptang2_flat = davel_matrix_product_vector3(m_inv, ptang2);
+	profile = [[0,0,0], ptang1, ptang2];
+	
+	// rotate the points so that what was the axis of the bevel (dir) is
+	// now the z axis and the normal of the bevel (ntn) is now the x
+	// axis.
+	profile_derotated = davel_matrix_product_vectors3(m_inv,profile);
+	c_derotated = davel_matrix_product_vector3(m_inv, c);
+	
+	// create a 2d list of point to use for polygon()
+	profile_flat = davel_vectors3_to_2(profile_derotated);
 	
 	multmatrix(m)
 	{
@@ -48,13 +55,9 @@ module davel_bevel(length, n1, n2, r=2, offset=0.01)
 			{
 				difference()
 				{
-					polygon([
-						[0, 0],
-						[ptang1_flat[0], ptang1_flat[1]],
-						[ptang2_flat[0], ptang2_flat[1]]
-					]);
+					polygon(profile_flat);
 					
-					translate(c_flat) circle(r=r);
+					translate(c_derotated) circle(r=r);
 				}
 			}
 		}
@@ -118,6 +121,10 @@ function davel_matrix_product_vector3(m,v) = [
 	m[2][0]*v[0] + m[2][1]*v[1] + m[2][2]*v[2]
 ];
 
+function davel_matrix_product_vectors3(m,vectors) = [
+	for (v=vectors) davel_matrix_product_vector3(m,v)
+];
+
 function davel_matrix_from_rows3(rows) = [rows[0], rows[1], rows[2]];
 
 function davel_matrix_from_columns3(columns) = davel_transpose3(davel_matrix_from_rows3(columns));
@@ -138,6 +145,10 @@ function davel_matrix4_to_3(m) = [
 	[m[1][0], m[1][1], m[1][2]],
 	[m[2][0], m[2][1], m[2][2]]
 ];
+
+function davel_vector3_to_2(v) = [v[0], v[1]];
+
+function davel_vectors3_to_2(vectors) = [ for(v=vectors) davel_vector3_to_2(v) ];
 
 
 
