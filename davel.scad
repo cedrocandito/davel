@@ -42,7 +42,7 @@ module davel_bevel(length, n1, n2, r=2, offset=0.01)
 	
 	multmatrix(m)
 	{
-		linear_extrude(height=length, center=true)
+		linear_extrude(height=length + offset*2, center=true)
 		{
 			translate([offset, 0, 0])
 			{
