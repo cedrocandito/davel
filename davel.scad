@@ -3,7 +3,7 @@ Library to draw (or, better, substract) simple bevel borders.
 */
 
 
-module davel_bevel(length, n1, n2, r, offset=0.1)
+module davel_bevel(length, n1, n2, r, side_offset=0.1, back_offset = 0.1)
 {
 	assert(is_list(n1));
 	assert(is_list(n2));
@@ -36,9 +36,9 @@ module davel_bevel(length, n1, n2, r, offset=0.1)
 	m = davel_matrix_from_columns4([newx, newy, newz]);
 	m_inv = davel_transpose3(davel_matrix4_to_3(m));
 	
-	ptang1_off = ptang1 + n1n * offset;
-	ptang2_off = ptang2 + n2n * offset;
-	origin_off = ntn * offset;
+	ptang1_off = ptang1 + n1n * back_offset;
+	ptang2_off = ptang2 + n2n * back_offset;
+	origin_off = ntn * back_offset;
 	profile = [origin_off, ptang1_off, ptang1, ptang2, ptang2_off];
 	
 	// rotate the points so that what was the axis of the bevel (dir) is
@@ -52,7 +52,7 @@ module davel_bevel(length, n1, n2, r, offset=0.1)
 	
 	multmatrix(m)
 	{
-		linear_extrude(height=length + offset*2, center=true)
+		linear_extrude(height=length + side_offset*2, center=true)
 		{
 			difference()
 			{
@@ -65,54 +65,54 @@ module davel_bevel(length, n1, n2, r, offset=0.1)
 }
 
 
-module davel_bevel_pos(pos, length, n1, n2, r, offset=0.1)
+module davel_bevel_pos(pos, length, n1, n2, r, side_offset=0.1, back_offset = 0.1)
 {
-	translate(pos) davel_bevel(length, n1, n2, r, offset);
+	translate(pos) davel_bevel(length, n1, n2, r, side_offset=side_offset, back_offset=back_offset);
 }
 
-module davel_buttress(length, n1, n2, r, offset=0)
+module davel_buttress(length, n1, n2, r, side_offset=0, back_offset = 0.1)
 {
-	davel_bevel(length, -n1, -n2, r, offset);
+	davel_bevel(length, -n1, -n2, r, side_offset=side_offset, back_offset=back_offset);
 }
 
-module davel_buttress_pos(pos, length, n1, n2, r, offset=0)
+module davel_buttress_pos(pos, length, n1, n2, r, back_offset=0.1)
 {
-	davel_bevel_pos(pos, length, -n1, -n2, r, offset);
+	davel_bevel_pos(pos, length, -n1, -n2, r,  side_offset=0, back_offset=back_offset);
 }
 
 
-module davel_cube_bevel(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, offset=0.1)
+module davel_cube_bevel(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, side_offset = 0.1, back_offset = 0.1)
 {	
 	translate(center ? -size/2 : [0,0,0])
 	{
 		union()
 		{
 			if (top && left)
-				davel_bevel_pos([0, size[1]/2, size[2]], size[1], [-1,0,0], [0,0,1], r, offset);
+				davel_bevel_pos([0, size[1]/2, size[2]], size[1], [-1,0,0], [0,0,1], r, side_offset, back_offset);
 			if (top && right)
-				davel_bevel_pos([size[0], size[1]/2, size[2]], size[1], [1,0,0], [0,0,1], r, offset);
+				davel_bevel_pos([size[0], size[1]/2, size[2]], size[1], [1,0,0], [0,0,1], r, side_offset, back_offset);
 			if (bottom && left)
-				davel_bevel_pos([0, size[1]/2, 0], size[1], [-1,0,0], [0,0,-1], r, offset);
+				davel_bevel_pos([0, size[1]/2, 0], size[1], [-1,0,0], [0,0,-1], r, side_offset, back_offset);
 			if (bottom && right)
-				davel_bevel_pos([size[0], size[1]/2, 0], size[1], [1,0,0], [0,0,-1], r, offset);
+				davel_bevel_pos([size[0], size[1]/2, 0], size[1], [1,0,0], [0,0,-1], r, side_offset, back_offset);
 			
 			if (front && top)
-				davel_bevel_pos([size[0]/2, 0, size[2]], size[0], [0,-1,0], [0,0,1], r, offset);
+				davel_bevel_pos([size[0]/2, 0, size[2]], size[0], [0,-1,0], [0,0,1], r, side_offset, back_offset);
 			if (front && bottom)
-				davel_bevel_pos([size[0]/2, 0, 0], size[0], [0,-1,0], [0,0,-1], r, offset);
+				davel_bevel_pos([size[0]/2, 0, 0], size[0], [0,-1,0], [0,0,-1], r, side_offset, back_offset);
 			if (back && top)
-				davel_bevel_pos([size[0]/2, size[1], size[2]], size[0], [0,1,0], [0,0,1], r, offset);
+				davel_bevel_pos([size[0]/2, size[1], size[2]], size[0], [0,1,0], [0,0,1], r, side_offset, back_offset);
 			if (back && bottom)
-				davel_bevel_pos([size[0]/2, size[1], 0], size[0], [0,1,0], [0,0,-1], r, offset);
+				davel_bevel_pos([size[0]/2, size[1], 0], size[0], [0,1,0], [0,0,-1], r, side_offset, back_offset);
 			
 			if (front && left)
-				davel_bevel_pos([0, 0, size[2]/2], size[2], [0,-1,0], [-1,0,0], r, offset);
+				davel_bevel_pos([0, 0, size[2]/2], size[2], [0,-1,0], [-1,0,0], r, side_offset, back_offset);
 			if (front && right)
-				davel_bevel_pos([size[0], 0, size[2]/2], size[2], [0,-1,0], [1,0,0], r, offset);
+				davel_bevel_pos([size[0], 0, size[2]/2], size[2], [0,-1,0], [1,0,0], r, side_offset, back_offset);
 			if (back && left)
-				davel_bevel_pos([0, size[1], size[2]/2], size[2], [0,1,0], [-1,0,0], r, offset);
+				davel_bevel_pos([0, size[1], size[2]/2], size[2], [0,1,0], [-1,0,0], r, side_offset, back_offset);
 			if (back && right)
-				davel_bevel_pos([size[0], size[1], size[2]/2], size[2], [0,1,0], [1,0,0], r, offset);
+				davel_bevel_pos([size[0], size[1], size[2]/2], size[2], [0,1,0], [1,0,0], r, side_offset, back_offset);
 			
 			if (round_vert)
 			{
@@ -135,6 +135,11 @@ module davel_cube_bevel(size, r, center=false, front=true, back=true, top=true, 
 			}
 		}
 	}
+}
+
+module davel_cube_buttress(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, back_offset=0.1)
+{
+	davel_cube_bevel(size, r, center, front, back, top, bottom, left, right, round_vert, side_offset=0, back_offset=back_offset);
 }
 
 // ===================== functions and "private" modules =====================
