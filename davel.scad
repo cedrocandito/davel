@@ -3,6 +3,8 @@ Library to draw (or, better, substract) simple bevel borders.
 */
 
 
+/* -------- bevel ----- */
+
 module davel_bevel(length, n1, n2, r, side_offset=0.1, back_offset = 0.1)
 {
 	assert(is_list(n1));
@@ -64,24 +66,7 @@ module davel_bevel(length, n1, n2, r, side_offset=0.1, back_offset = 0.1)
 	}
 }
 
-
-module davel_bevel_pos(pos, length, n1, n2, r, side_offset=0.1, back_offset = 0.1)
-{
-	translate(pos) davel_bevel(length, n1, n2, r, side_offset=side_offset, back_offset=back_offset);
-}
-
-module davel_buttress(length, n1, n2, r, side_offset=0, back_offset = 0.1)
-{
-	davel_bevel(length, -n1, -n2, r, side_offset=side_offset, back_offset=back_offset);
-}
-
-module davel_buttress_pos(pos, length, n1, n2, r, back_offset=0.1)
-{
-	davel_bevel_pos(pos, length, -n1, -n2, r,  side_offset=0, back_offset=back_offset);
-}
-
-
-module davel_cube_bevel(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, side_offset = 0.1, back_offset = 0.1)
+module davel_box_bevel(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, side_offset = 0.1, back_offset = 0.1)
 {	
 	translate(center ? -size/2 : [0,0,0])
 	{
@@ -137,10 +122,38 @@ module davel_cube_bevel(size, r, center=false, front=true, back=true, top=true, 
 	}
 }
 
-module davel_cube_buttress(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, back_offset=0.1)
+module davel_bevel_pos(pos, length, n1, n2, r, side_offset=0.1, back_offset = 0.1)
 {
-	davel_cube_bevel(size, r, center, front, back, top, bottom, left, right, round_vert, side_offset=0, back_offset=back_offset);
+	translate(pos) davel_bevel(length, n1, n2, r, side_offset=side_offset, back_offset=back_offset);
 }
+
+module davel_bevel_points(p1, p2, n1, n2, r, side_offset=0.1, back_offset = 0.1)
+{
+	davel_bevel_pos(p1, norm(p2-p1), n1, n2, r, side_offset=side_offset, back_offset=back_offset);
+}
+
+/* ----- buttress ----- */
+
+module davel_buttress(length, n1, n2, r, side_offset=0, back_offset = 0.1)
+{
+	davel_bevel(length, -n1, -n2, r, side_offset=side_offset, back_offset=back_offset);
+}
+
+module davel_buttress_pos(pos, length, n1, n2, r, side_offset=0, back_offset=0.1)
+{
+	translate(pos) davel_buttress(length, n1, n2, r, side_offset=side_offset, back_offset=back_offset);
+}
+
+module davel_buttress_points(p1, p2, n1, n2, r, side_offset=0, back_offset=0.1)
+{
+	davel_buttress_pos(p1, norm(p2-p1), n1, n2, r, side_offset=side_offset, back_offset=back_offset);
+}
+
+module davel_box_buttress(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, back_offset=0.1)
+{
+	davel_box_bevel(size, r, center, front, back, top, bottom, left, right, round_vert, side_offset=0, back_offset=back_offset);
+}
+
 
 // ===================== functions and "private" modules =====================
 
