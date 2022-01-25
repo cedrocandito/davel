@@ -21,6 +21,15 @@ By Davide Orlandi - davide[at]davideorlandi.it
 
 /* -------- bevel ----- */
 
+/*
+Draw a bevel.
+- length: length of the bevel, longitudinally.
+- n1: normal vector of the first surface.
+- n2: normal vector of the second surface.
+- r: radius of the bevel.
+- side_offset: extra length added to the sides (optional, default 0.1).
+- back offset: extra thickness added to the back of the bevel (optional, default 0.1).
+*/
 module davel_bevel(length, n1, n2, r, side_offset=0.1, back_offset = 0.1)
 {
 	assert(is_list(n1));
@@ -82,6 +91,20 @@ module davel_bevel(length, n1, n2, r, side_offset=0.1, back_offset = 0.1)
 	}
 }
 
+/*
+Draw bevels for a box.
+- size: 3-dimension vector size of the box.
+- r: radius of the bevel.
+- center: boolean, if true the box is centered. Optional, default is false.
+- front, back, top, bottom, left, right: boolean, draw or omit bevels for that
+  corner. They are all optional, default is true.
+- round_vert: boolean, if true draw a rounded vertex using a sphere. Optional,
+  default is true.
+- side_offset: extra length added to the sides og the single bevels
+  (optional, default 0.1).
+- back offset: extra thickness added to the back of the single bevels
+  (optional, default 0.1).
+*/
 module davel_box_bevel(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, side_offset = 0.1, back_offset = 0.1)
 {	
 	translate(center ? -size/2 : [0,0,0])
@@ -138,33 +161,99 @@ module davel_box_bevel(size, r, center=false, front=true, back=true, top=true, b
 	}
 }
 
+/*
+Draw a bevel, specifying its center point (so you don't need to translate()
+it yourself).
+- pos: 3-dimension vector position.
+- length: length of the bevel, longitudinally.
+- n1: normal vector of the first surface.
+- n2: normal vector of the second surface.
+- r: radius of the bevel.
+- side_offset: extra length added to the sides (optional, default 0.1).
+- back offset: extra thickness added to the back of the bevel (optional, default 0.1).
+*/
 module davel_bevel_pos(pos, length, n1, n2, r, side_offset=0.1, back_offset = 0.1)
 {
 	translate(pos) davel_bevel(length, n1, n2, r, side_offset=side_offset, back_offset=back_offset);
 }
 
+/*
+Draw a bevel, specifying its side points (top and bottom
+of the "cylinder") instead of center point and length.
+- p1: 3-dimension vector of the first end.
+- p2: 3-dimension vector of the second end.
+- n1: normal vector of the first surface.
+- n2: normal vector of the second surface.
+- r: radius of the bevel.
+- side_offset: extra length added to the sides (optional, default 0.1).
+- back offset: extra thickness added to the back of the bevel (optional, default 0.1).
+*/
 module davel_bevel_points(p1, p2, n1, n2, r, side_offset=0.1, back_offset = 0.1)
 {
 	davel_bevel_pos(p1, norm(p2-p1), n1, n2, r, side_offset=side_offset, back_offset=back_offset);
 }
 
+
 /* ----- buttress ----- */
 
+/*
+Draw a buttress.
+- length: length of the buttress, longitudinally.
+- n1: normal vector of the first surface.
+- n2: normal vector of the second surface.
+- r: radius of the buttress.
+- side_offset: extra length added to the sides (optional, default 0).
+- back offset: extra thickness added to the back of the buttress (optional, default 0.1).
+*/
 module davel_buttress(length, n1, n2, r, side_offset=0, back_offset = 0.1)
 {
 	davel_bevel(length, -n1, -n2, r, side_offset=side_offset, back_offset=back_offset);
 }
 
+/*
+Draw a buttress, specifying its center point (so you don't need to translate()
+it yourself).
+- pos: 3-dimension vector position.
+- length: length of the buttress, longitudinally.
+- n1: normal vector of the first surface.
+- n2: normal vector of the second surface.
+- r: radius of the buttress.
+- side_offset: extra length added to the sides (optional, default 0).
+- back offset: extra thickness added to the back of the buttress (optional, default 0.1).
+*/
 module davel_buttress_pos(pos, length, n1, n2, r, side_offset=0, back_offset=0.1)
 {
 	translate(pos) davel_buttress(length, n1, n2, r, side_offset=side_offset, back_offset=back_offset);
 }
 
+/*
+Draw a buttress, specifying its side points (top and bottom
+of the "cylinder") instead of center point and length.
+- p1: 3-dimension vector of the first end.
+- p2: 3-dimension vector of the second end.
+- n1: normal vector of the first surface.
+- n2: normal vector of the second surface.
+- r: radius of the buttress.
+- side_offset: extra length added to the sides (optional, default 0).
+- back offset: extra thickness added to the back of the buttress (optional, default 0.1).
+*/
 module davel_buttress_points(p1, p2, n1, n2, r, side_offset=0, back_offset=0.1)
 {
 	davel_buttress_pos(p1, norm(p2-p1), n1, n2, r, side_offset=side_offset, back_offset=back_offset);
 }
 
+/*
+Draw buttresses for a box.
+- size: 3-dimension vector size of the box.
+- r: radius of the buttress.
+- center: boolean, if true the box is centered. Optional, default is false.
+- front, back, top, bottom, left, right: boolean, draw or omit buttresses for that
+  corner. They are all optional, default is true.
+- round_vert: boolean, if true draw a rounded vertex using a sphere. Optional,
+  default is true.
+- back offset: extra thickness added to the back of the single buttresses
+  (optional, default 0.1).
+*/
 module davel_box_buttress(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, back_offset=0.1)
 {
 	davel_box_bevel(size, r, center, front, back, top, bottom, left, right, round_vert, side_offset=0, back_offset=back_offset);
@@ -187,14 +276,14 @@ module davel_round_vertex(pos, dir, r)
 
 function davel_transpose4(m) = [
 	[m[0][0],m[1][0],m[2][0],m[3][0]],
-    [m[0][1],m[1][1],m[2][1],m[3][1]],
+  [m[0][1],m[1][1],m[2][1],m[3][1]],
 	[m[0][2],m[1][2],m[2][2],m[3][2]],
 	[m[0][3],m[1][3],m[2][3],m[3][3]]
 ];
 
 function davel_transpose3(m) = [
 	[m[0][0],m[1][0],m[2][0]],
-    [m[0][1],m[1][1],m[2][1]],
+  [m[0][1],m[1][1],m[2][1]],
 	[m[0][2],m[1][2],m[2][2]]
 ];
 
@@ -233,7 +322,7 @@ function davel_vector3_to_2(v) = [v[0], v[1]];
 
 function davel_vectors3_to_2(vectors) = [ for(v=vectors) davel_vector3_to_2(v) ];
 
-
+/* ----- helper modules for debugging (draw a vector or an origin) ----- */
 
 module davel_debug_draw_origin(alpha = 1.0)
 {
@@ -248,7 +337,7 @@ module davel_debug_draw_origin(alpha = 1.0)
 		color("green", alpha)
 			rotate([-90,0,0])
 				cylinder(r=0.1,h=2);
-	}		
+	}
 }
 
 module davel_debug_draw_vector(v, with_ball=false)
