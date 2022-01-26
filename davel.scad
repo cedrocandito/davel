@@ -27,10 +27,10 @@ Draw a bevel.
 - n1: normal vector of the first surface.
 - n2: normal vector of the second surface.
 - r: radius of the bevel.
-- side_offset: extra length added to the sides (optional, default 0.1).
-- back offset: extra thickness added to the back of the bevel (optional, default 0.1).
+- side_offset: extra length added to the sides (optional, default 0.01).
+- back offset: extra thickness added to the back of the bevel (optional, default 0.01).
 */
-module davel_bevel(length, n1, n2, r, side_offset=0.1, back_offset = 0.1)
+module davel_bevel(length, n1, n2, r, side_offset=0.01, back_offset = 0.01)
 {
 	assert(is_list(n1));
 	assert(is_list(n2));
@@ -101,11 +101,11 @@ Draw bevels for a box.
 - round_vert: boolean, if true draw a rounded vertex using a sphere. Optional,
   default is true.
 - side_offset: extra length added to the sides og the single bevels
-  (optional, default 0.1).
+  (optional, default 0.01).
 - back offset: extra thickness added to the back of the single bevels
-  (optional, default 0.1).
+  (optional, default 0.01).
 */
-module davel_box_bevel(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, side_offset = 0.1, back_offset = 0.1)
+module davel_box_bevel(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, side_offset = 0.01, back_offset = 0.01)
 {	
 	translate(center ? -size/2 : [0,0,0])
 	{
@@ -169,10 +169,10 @@ it yourself).
 - n1: normal vector of the first surface.
 - n2: normal vector of the second surface.
 - r: radius of the bevel.
-- side_offset: extra length added to the sides (optional, default 0.1).
-- back offset: extra thickness added to the back of the bevel (optional, default 0.1).
+- side_offset: extra length added to the sides (optional, default 0.01).
+- back offset: extra thickness added to the back of the bevel (optional, default 0.01).
 */
-module davel_bevel_pos(pos, length, n1, n2, r, side_offset=0.1, back_offset = 0.1)
+module davel_bevel_pos(pos, length, n1, n2, r, side_offset=0.01, back_offset = 0.01)
 {
 	translate(pos) davel_bevel(length, n1, n2, r, side_offset=side_offset, back_offset=back_offset);
 }
@@ -185,12 +185,12 @@ of the "cylinder") instead of center point and length.
 - n1: normal vector of the first surface.
 - n2: normal vector of the second surface.
 - r: radius of the bevel.
-- side_offset: extra length added to the sides (optional, default 0.1).
-- back offset: extra thickness added to the back of the bevel (optional, default 0.1).
+- side_offset: extra length added to the sides (optional, default 0.01).
+- back offset: extra thickness added to the back of the bevel (optional, default 0.01).
 */
-module davel_bevel_points(p1, p2, n1, n2, r, side_offset=0.1, back_offset = 0.1)
+module davel_bevel_points(p1, p2, n1, n2, r, side_offset=0.01, back_offset = 0.01)
 {
-	davel_bevel_pos(p1, norm(p2-p1), n1, n2, r, side_offset=side_offset, back_offset=back_offset);
+	davel_bevel_pos((p1+p2)/2, norm(p2-p1), n1, n2, r, side_offset=side_offset, back_offset=back_offset);
 }
 
 
@@ -203,9 +203,9 @@ Draw a buttress.
 - n2: normal vector of the second surface.
 - r: radius of the buttress.
 - side_offset: extra length added to the sides (optional, default 0).
-- back offset: extra thickness added to the back of the buttress (optional, default 0.1).
+- back offset: extra thickness added to the back of the buttress (optional, default 0.01).
 */
-module davel_buttress(length, n1, n2, r, side_offset=0, back_offset = 0.1)
+module davel_buttress(length, n1, n2, r, side_offset=0, back_offset = 0.01)
 {
 	davel_bevel(length, -n1, -n2, r, side_offset=side_offset, back_offset=back_offset);
 }
@@ -219,9 +219,9 @@ it yourself).
 - n2: normal vector of the second surface.
 - r: radius of the buttress.
 - side_offset: extra length added to the sides (optional, default 0).
-- back offset: extra thickness added to the back of the buttress (optional, default 0.1).
+- back offset: extra thickness added to the back of the buttress (optional, default 0.01).
 */
-module davel_buttress_pos(pos, length, n1, n2, r, side_offset=0, back_offset=0.1)
+module davel_buttress_pos(pos, length, n1, n2, r, side_offset=0, back_offset=0.01)
 {
 	translate(pos) davel_buttress(length, n1, n2, r, side_offset=side_offset, back_offset=back_offset);
 }
@@ -235,11 +235,11 @@ of the "cylinder") instead of center point and length.
 - n2: normal vector of the second surface.
 - r: radius of the buttress.
 - side_offset: extra length added to the sides (optional, default 0).
-- back offset: extra thickness added to the back of the buttress (optional, default 0.1).
+- back offset: extra thickness added to the back of the buttress (optional, default 0.01).
 */
-module davel_buttress_points(p1, p2, n1, n2, r, side_offset=0, back_offset=0.1)
+module davel_buttress_points(p1, p2, n1, n2, r, side_offset=0, back_offset=0.01)
 {
-	davel_buttress_pos(p1, norm(p2-p1), n1, n2, r, side_offset=side_offset, back_offset=back_offset);
+	davel_buttress_pos((p1+p2)/2, norm(p2-p1), n1, n2, r, side_offset=side_offset, back_offset=back_offset);
 }
 
 /*
@@ -252,9 +252,9 @@ Draw buttresses for a box.
 - round_vert: boolean, if true draw a rounded vertex using a sphere. Optional,
   default is true.
 - back offset: extra thickness added to the back of the single buttresses
-  (optional, default 0.1).
+  (optional, default 0.01).
 */
-module davel_box_buttress(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, back_offset=0.1)
+module davel_box_buttress(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, back_offset=0.01)
 {
 	davel_box_bevel(size, r, center, front, back, top, bottom, left, right, round_vert, side_offset=0, back_offset=back_offset);
 }
@@ -329,25 +329,27 @@ module davel_debug_draw_origin(alpha = 1.0)
 	$fn = 16;
 	union()
 	{
-		color("blue", alpha)
-			cylinder(r=0.1,h=2);
 		color("red", alpha)
-			rotate([0,90,0])
-				cylinder(r=0.1,h=2);
+			davel_debug_draw_vector([1,0,0], with_head=true);
 		color("green", alpha)
-			rotate([-90,0,0])
-				cylinder(r=0.1,h=2);
+			davel_debug_draw_vector([0,1,0], with_head=true);
+		color("blue", alpha)
+			davel_debug_draw_vector([0,0,1], with_head=true);
 	}
 }
 
-module davel_debug_draw_vector(v, with_ball=false)
+module davel_debug_draw_vector(v, with_head=true)
 {
 	vl = norm(v);	// length
-	b = acos(v[2] / vl);	// right scension
-	c = atan2(v[1],v[0]);     // azimuth
+	b = acos(v[2] / vl);	// right ascension
+	c = atan2(v[1],v[0]);	// azimuth
 	rotate([0,b,c])
-		cylinder(r=0.03, h = vl);
-	if (with_ball)
-		translate(v)
-			sphere(d=0.15, $fn=25);
+	{
+		cylinder(r=0.01, h = vl);
+		if (with_head)
+		{
+			translate([0,0,vl])
+				cylinder(d1=0.05, d2=0, h=0.1);
+		}
+	}
 }
