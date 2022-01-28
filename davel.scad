@@ -100,7 +100,7 @@ Draw bevels for a box.
   corner. They are all optional, default is true.
 - round_vert: boolean, if true draw a rounded vertex using a sphere. Optional,
   default is true.
-- side_offset: extra length added to the sides og the single bevels
+- side_offset: extra length added to the sides of the single bevels
   (optional, default 0.01).
 - back offset: extra thickness added to the back of the single bevels
   (optional, default 0.01).
