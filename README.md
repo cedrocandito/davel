@@ -135,7 +135,9 @@ As a convenience, modules for beveled and "buttressed" boxes are provided.
 
 ### Beveled box
 
-    module davel_box_bevel(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, side_offset = 0.01, back_offset = 0.01)
+    module davel_box_bevel(size, r, center=false, front=true, back=true, top=true,
+    bottom=true, left=true, right=true, round_vert=true,
+    side_offset = 0.01, back_offset = 0.01)
 
 - `size`: 3-dimension vector size of the box.
 - `r`: radius of the bevel.
@@ -150,7 +152,9 @@ Draw bevels for a box (not the box itself: as always you should subtract the `da
 
 ### "Buttressed" box
 
-    module davel_box_buttress(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, back_offset=0.01)
+    module davel_box_buttress(size, r, center=false, front=true, back=true, top=true,
+    bottom=true, left=true, right=true,
+    round_vert=true, back_offset=0.01)
 
 - `size`: 3-dimension vector size of the box.
 - `r`: radius of the buttresses.
