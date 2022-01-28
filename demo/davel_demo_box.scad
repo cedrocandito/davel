@@ -1,5 +1,5 @@
 /*
-Usage examples of davel.scad: non rectangular bevels and buttresses.
+Usage examples of davel.scad: box.
 
 By Davide Orlandi - davide[at]davideorlandi.it
 
@@ -18,33 +18,44 @@ By Davide Orlandi - davide[at]davideorlandi.it
 		<http://www.gnu.org/licenses/>.
 */
 
-use <davel.scad>
+use <../davel.scad>
 
 $fa=3;
-$fs=0.2;
+$fs=0.15;
 
-non_rectangular_demo();
+box_w = 10;
+box_l = 13;
+box_h = 7;
+box_r_out = 1.2;
+box_r_in = 0.8;
+box_thickness = 1.5;
+box_size_outer = [box_w, box_l, box_h];
+box_size_inner = [box_w-box_thickness*2, box_l-box_thickness*2, box_h];
+
+demo_box();
 
 
-module non_rectangular_demo()
+module demo_box()
 {
-	union()
+	difference()
 	{
+		// external box (beveled)
 		difference()
 		{
-			cylinder(r=10,h=5,$fn=6);
-			translate([0,0,-0.01]) cylinder(r=5,h=5.02,$fn=3);
-			
-			ybev = -10*sqrt(3)/2;
-			xbev = -5;
-			
-			#davel_bevel_points([xbev,ybev,0], [xbev,ybev,5], [0,-1,0], [cos(210),sin(210),0], 2);
+			cube([box_w,box_l,box_h]);
+			// no bevel on the back side
+			davel_box_bevel([box_w,box_l,box_h], box_r_out, back=false);
 		}
-
-		xbut=5;
-		ybut=0;
-
-		#davel_buttress_points([xbut,ybut,0], [xbut,ybut,5], [cos(240),sin(240),0], [cos(120),sin(120),0], 1.5);
+		
+		// inner box (carved out)
+		// A subtracted bevel is a buttress :-)
+		translate([box_thickness,box_thickness,box_thickness])
+		{
+			difference()
+			{
+				cube(box_size_inner);
+				davel_box_bevel(box_size_inner, box_r_in, top=false);
+			}
+		}
 	}
-	
 }

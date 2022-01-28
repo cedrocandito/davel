@@ -1,5 +1,5 @@
 /*
-Usage examples of davel.scad: box.
+Usage examples of davel.scad: non rectangular bevels and buttresses.
 
 By Davide Orlandi - davide[at]davideorlandi.it
 
@@ -18,44 +18,32 @@ By Davide Orlandi - davide[at]davideorlandi.it
 		<http://www.gnu.org/licenses/>.
 */
 
-use <davel.scad>
+use <../davel.scad>
 
 $fa=3;
-$fs=0.15;
+$fs=0.2;
 
-box_w = 10;
-box_l = 13;
-box_h = 7;
-box_r_out = 1.2;
-box_r_in = 0.8;
-box_thickness = 1.5;
-box_size_outer = [box_w, box_l, box_h];
-box_size_inner = [box_w-box_thickness*2, box_l-box_thickness*2, box_h];
-
-demo_box();
+bevel_demo();
 
 
-module demo_box()
+module bevel_demo()
 {
+
 	difference()
 	{
-		// external box (beveled)
-		difference()
-		{
-			cube([box_w,box_l,box_h]);
-			// no bevel on the back side
-			davel_box_bevel([box_w,box_l,box_h], box_r_out, back=false);
-		}
+		cube([10,10,10]);
 		
-		// inner box (carved out)
-		// A subtracted bevel is a buttress :-)
-		translate([box_thickness,box_thickness,box_thickness])
-		{
-			difference()
-			{
-				cube(box_size_inner);
-				davel_box_bevel(box_size_inner, box_r_in, top=false);
-			}
-		}
-	}
+		// front right corner: basic bevel
+		translate([10,0,5])
+			#davel_bevel(10, [0,-1,0], [1,0,0], 2);
+		
+		// back right corner: "pos" version
+		#davel_bevel_pos([10,10,5], 10, [0,1,0], [1,0,0], 2);
+		
+		// back left corner: "point" version
+		#davel_bevel_points([0,10,0], [0,10,10], [-1,0,0], [0,1,0], 2);
+		
+		// front left corner: larger (more visible) offsets
+		#davel_bevel_points([0,0,0], [0,0,10], [-1,0,0], [0,-1,0], 2, back_offset=1, side_offset=1);
+	}	
 }

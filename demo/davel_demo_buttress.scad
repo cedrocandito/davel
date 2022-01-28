@@ -18,7 +18,7 @@ By Davide Orlandi - davide[at]davideorlandi.it
 		<http://www.gnu.org/licenses/>.
 */
 
-use <davel.scad>
+use <../davel.scad>
 
 $fa=3;
 $fs=0.2;

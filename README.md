@@ -1,5 +1,5 @@
 # Davel
-(**DAV**orl makes bev**EL** :-) )
+(**DAV**orl (that is me) makes bev**EL** :-) )
 
 A simple bevel library for [OpenSCAD](https://openscad.org/).
 
@@ -32,14 +32,13 @@ To draw a bevel or a buttress you need to know:
 
 In the above image:
 
-- The <span style="color:blue">blue line</span> is the edge between the two surfaces.
-- The <span style="color:green">green dots</span> are the ends of the edge (used in the *points* version of the bevel or buttress, see below).
+- The <span style="color:blue">blue line</span> is the edge (corner) that you want to smooth, where the two faces meet.
+- The <span style="color:green">green dots</span> are the end points of the edge (used in the *points* version of the bevel or buttress, see below).
 - The <span style="color:red">red dot</span> is the midpoint of the edge, where the local origin is.
 - The <span style="color:orange">orange</span> and <span style="color:lightblue">light blue</span> vectors are the normals of the two surfaces you want to smooth with a bevel.
 
 ## Bevels
 
-???????
 ![Bevel](images/bevel.png)
 
 Depending on how you want to specify position and length there are three slightly different versions of the bevel module:
@@ -55,7 +54,7 @@ Depending on how you want to specify position and length there are three slightl
 - `side_offset`: extra length added to the sides (optional, default 0.01).
 - `back offset`: extra thickness added to the back of the bevel (optional, default 0.01).
 
-There is no position in this basic version; the origin point is set on the middle point of the edge to be smoothed; you have to `translate()` it manually.
+There is no position parameter in this basic version; the origin point is set on the middle point of the edge to be smoothed; you have to `translate()` it manually.
 
 ### Bevel, "position" version
 
@@ -134,4 +133,46 @@ As a convenience, modules for beveled and "buttressed" boxes are provided.
 
 ![Beveled box](images/box.png)
 
-??? TBD
+### Beveled box
+
+    module davel_box_bevel(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, side_offset = 0.01, back_offset = 0.01)
+
+- `size`: 3-dimension vector size of the box.
+- `r`: radius of the bevel.
+- `center`: boolean, if true the box is centered. Optional, default is false.
+- `front`, `back`, `top`, `bottom`, `left`, `right`: boolean, draw or omit bevels for that
+  corner. They are all optional, default is true.
+- `round_vert`: boolean, if true draw a rounded vertex using a sphere. Optional, default is true.
+- `side_offset`: extra length added to the sides of the single bevels (optional, default 0.01).
+- `back offset`: extra thickness added to the back of the single bevels (optional, default 0.01).
+
+Draw bevels for a box (not the box itself: as always you should subtract the `davel_box_bevel()` from the cube).
+
+### "Buttressed" box
+
+    module davel_box_buttress(size, r, center=false, front=true, back=true, top=true, bottom=true, left=true, right=true, round_vert=true, back_offset=0.01)
+
+- `size`: 3-dimension vector size of the box.
+- `r`: radius of the buttresses.
+- `center`: boolean, if true the box is centered. Optional, default is false.
+- `front`, `back`, `top`, `bottom`, `left`, `right`: boolean, draw or omit buttresses for that
+  corner. They are all optional, default is true.
+- `round_vert`: boolean, if true draw a rounded vertex using a sphere. Optional, default is true.
+- `side_offset`: extra length added to the sides of the single bevels (optional, default 0).
+- `back offset`: extra thickness added to the back of the single bevels (optional, default 0.01).
+
+Draw buttresses to round the corners of a box-shaped cavity. As always, you should add (union) the `davel_box_buttress()` to the cube. In fact a `davel_box_buttress()` davel_box_buttress is identical to a `davel_box_bevel()` except for the default of `side_offset`, which is 0 for this module.
+
+## Notes
+
+### You are not limited to square angles!
+
+![Non square angles](images/not_square.png)
+
+You can put bevels and buttresses on any edge; just make sure to specify the correct normals.
+
+### Subdivisions
+
+You can set the number of divisions in your bevel/buttress by setting `$fa`, `$fs` and/or `$fn` either globally or as an addition parameter of the davel modules. For example:
+
+    davel_bevel_points([0,0,0], [0,0,10], [-1,0,0], [0,-1,0], 3, $fa=3, $fs=0.3);
